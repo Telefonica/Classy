@@ -6,6 +6,12 @@
 //  Copyright (c) 2013 cloudling. All rights reserved.
 //
 
+//! Project version number for Classy
+FOUNDATION_EXPORT double ClassyVersionNumber;
+
+//! Project version string for Classy
+FOUNDATION_EXPORT const unsigned char ClassyVersionString[];
+
 #import <Foundation/Foundation.h>
 
 #import "CASStyler.h"

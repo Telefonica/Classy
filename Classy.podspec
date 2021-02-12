@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'Classy'
-  s.version  = '1.0.0'
+  s.version  = '1.0.1'
   s.license  = 'MIT'
   s.summary  = 'Expressive, flexible, and powerful stylesheets for UIView and friends.'
   s.homepage = 'http://classykit.github.io/Classy/'
@@ -20,5 +20,6 @@ Pod::Spec.new do |s|
   s.ios.frameworks = 'Foundation', 'UIKit', 'QuartzCore'
 
   s.ios.deployment_target = '9.0'
+  s.tvos.deployment_target = '9.0'
   s.requires_arc = true
 end
