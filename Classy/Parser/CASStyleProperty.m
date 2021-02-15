@@ -298,7 +298,11 @@
         }
 #pragma clang diagnostic pop
     } else {
+#if TARGET_OS_TV
+        CGFloat fontSizeValue = [fontSize floatValue] ?: 17.0;
+#else
         CGFloat fontSizeValue = [fontSize floatValue] ?: [UIFont systemFontSize];
+#endif
         if (fontName) {
             if ([fontName hasPrefix:@"System"]) {
                 
