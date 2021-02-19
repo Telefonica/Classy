@@ -457,12 +457,18 @@ NSArray *ClassGetSubclasses(Class parentClass) {
         @"compactPrompt"    : @(UIBarMetricsCompactPrompt),
     };
 
+#if TARGET_OS_TV
+    NSDictionary *searchBarIconMap = @{
+        @"search"       : @(UISearchBarIconSearch)
+    };
+#else
     NSDictionary *searchBarIconMap = @{
         @"search"       : @(UISearchBarIconSearch),
         @"clear"        : @(UISearchBarIconClear),
         @"bookmark"     : @(UISearchBarIconBookmark),
         @"resultsList"  : @(UISearchBarIconResultsList),
     };
+#endif
 
     NSDictionary *barPositionMap = @{
         @"any"          : @(UIBarPositionAny),
@@ -578,8 +584,6 @@ NSArray *ClassGetSubclasses(Class parentClass) {
     
     [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setImage:forState:) forPropertyKey:@"image"];
     
-    
-
     // UIBarButtonItem
     objectClassDescriptor = [self objectClassDescriptorForClass:UIBarButtonItem.class];
 
@@ -643,20 +647,10 @@ NSArray *ClassGetSubclasses(Class parentClass) {
 
     [objectClassDescriptor setArgumentDescriptors:@[dictionaryArg, stateArg] setter:@selector(setTitleTextAttributes:forState:) forPropertyKey:@"titleTextAttributes"];
     
-    // UIStepper
-    objectClassDescriptor = [self objectClassDescriptorForClass:UIStepper.class];
-
-    [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setBackgroundImage:forState:) forPropertyKey:@"backgroundImage"];
-
-    [objectClassDescriptor setArgumentDescriptors:@[imageArg, [CASArgumentDescriptor argWithName:@"leftSegmentState" valuesByName:controlStateMap], [CASArgumentDescriptor argWithName:@"rightSegmentState" valuesByName:controlStateMap]] setter:@selector(setDividerImage:forLeftSegmentState:rightSegmentState:) forPropertyKey:@"dividerImage"];
-
-    [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setDecrementImage:forState:) forPropertyKey:@"decrementImage"];
-
-    [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setIncrementImage:forState:) forPropertyKey:@"incrementImage"];
-
     // UITabBar
     objectClassDescriptor = [self objectClassDescriptorForClass:UITabBar.class];
     if (CASKeyDeviceSystemMajorVersion() >= 7) {
+#if !TARGET_OS_TV
         NSDictionary *tabBarItemPositioningMap = @{
             @"auto"      : @(UITabBarItemPositioningAutomatic),
             @"automatic" : @(UITabBarItemPositioningAutomatic),
@@ -670,20 +664,13 @@ NSArray *ClassGetSubclasses(Class parentClass) {
             @"black"   : @(UIBarStyleBlack),
         };
         [objectClassDescriptor setArgumentDescriptors:@[[CASArgumentDescriptor argWithValuesByName:barStyleMap]] forPropertyKey:@cas_propertykey(UITabBar, barStyle)];
-        
+#endif
         [objectClassDescriptor setArgumentDescriptors:@[boolArg] forPropertyKey:@cas_propertykey(UITabBar, translucent)];
     }
 
     // UITabBarItem
     objectClassDescriptor = [self objectClassDescriptorForClass:UITabBarItem.class];
     [objectClassDescriptor setArgumentDescriptors:@[[CASArgumentDescriptor argWithObjCType:@encode(UIOffset)]] forPropertyKey:@cas_propertykey(UITabBarItem, titlePositionAdjustment)];
-
-    // UIToolBar
-    objectClassDescriptor = [self objectClassDescriptorForClass:UIToolbar.class];
-
-    [objectClassDescriptor setArgumentDescriptors:@[imageArg, [CASArgumentDescriptor argWithName:@"toolbarPosition" valuesByName:barPositionMap], barMetricsArg] setter:@selector(setBackgroundImage:forToolbarPosition:barMetrics:) forPropertyKey:@"backgroundImage"];
-
-    [objectClassDescriptor setArgumentDescriptors:@[imageArg, [CASArgumentDescriptor argWithName:@"toolbarPosition" valuesByName:barPositionMap]] setter:@selector(setShadowImage:forToolbarPosition:) forPropertyKey:@"shadowImage"];
 
     // CASTextAttributes
     objectClassDescriptor = [self objectClassDescriptorForClass:CASTextAttributes.class];
@@ -718,16 +705,36 @@ NSArray *ClassGetSubclasses(Class parentClass) {
     [objectClassDescriptor setArgumentDescriptors:@[textAlignmentArg] forPropertyKey:@cas_propertykey(NSParagraphStyle, alignment)];
     [objectClassDescriptor setArgumentDescriptors:@[lineBreakModeArg] forPropertyKey:@cas_propertykey(NSParagraphStyle, lineBreakMode)];
 
-
     // NSShadow
     objectClassDescriptor = [self objectClassDescriptorForClass:NSShadow.class];
     [objectClassDescriptor setArgumentDescriptors:@[colorArg] forPropertyKey:@cas_propertykey(NSShadow, shadowColor)];
 
+#if !TARGET_OS_TV
+    // UIStepper
+    objectClassDescriptor = [self objectClassDescriptorForClass:UIStepper.class];
+
+    [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setBackgroundImage:forState:) forPropertyKey:@"backgroundImage"];
+
+    [objectClassDescriptor setArgumentDescriptors:@[imageArg, [CASArgumentDescriptor argWithName:@"leftSegmentState" valuesByName:controlStateMap], [CASArgumentDescriptor argWithName:@"rightSegmentState" valuesByName:controlStateMap]] setter:@selector(setDividerImage:forLeftSegmentState:rightSegmentState:) forPropertyKey:@"dividerImage"];
+
+    [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setDecrementImage:forState:) forPropertyKey:@"decrementImage"];
+
+    [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setIncrementImage:forState:) forPropertyKey:@"incrementImage"];
+    
+    // UIToolBar
+    objectClassDescriptor = [self objectClassDescriptorForClass:UIToolbar.class];
+
+    [objectClassDescriptor setArgumentDescriptors:@[imageArg, [CASArgumentDescriptor argWithName:@"toolbarPosition" valuesByName:barPositionMap], barMetricsArg] setter:@selector(setBackgroundImage:forToolbarPosition:barMetrics:) forPropertyKey:@"backgroundImage"];
+
+    [objectClassDescriptor setArgumentDescriptors:@[imageArg, [CASArgumentDescriptor argWithName:@"toolbarPosition" valuesByName:barPositionMap]] setter:@selector(setShadowImage:forToolbarPosition:) forPropertyKey:@"shadowImage"];
+    
     // UISlider
     objectClassDescriptor = [self objectClassDescriptorForClass:UISlider.class];
     [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setMinimumTrackImage:forState:) forPropertyKey:@"minimumTrackImage"];
     [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setMaximumTrackImage:forState:) forPropertyKey:@"maximumTrackImage"];
     [objectClassDescriptor setArgumentDescriptors:@[imageArg, stateArg] setter:@selector(setThumbImage:forState:) forPropertyKey:@"thumbImage"];
+#endif
+
 }
 
 - (CASObjectClassDescriptor *)objectClassDescriptorForClass:(Class)aClass {
